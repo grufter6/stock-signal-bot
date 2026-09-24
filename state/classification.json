@@ -1,5 +1,183 @@
 {
-  "date": "",
-  "volatile": [],
-  "steady": []
+  "date": "2026-09-24",
+  "volatile": [
+    {
+      "symbol": "MSTR",
+      "price": 161.25,
+      "ann_vol": 1.1187,
+      "atr_pct": 5.67,
+      "sma50": 116.37,
+      "sma200": 129.38,
+      "rsi14": 59.7,
+      "beta": 3.01,
+      "bucket": "volatile"
+    },
+    {
+      "symbol": "COIN",
+      "price": 197.80499267578125,
+      "ann_vol": 0.9074,
+      "atr_pct": 5.94,
+      "sma50": 169.72,
+      "sma200": 174.46,
+      "rsi14": 52.4,
+      "beta": 2.37,
+      "bucket": "volatile"
+    },
+    {
+      "symbol": "ARM",
+      "price": 311.29998779296875,
+      "ann_vol": 0.8895,
+      "atr_pct": 6.1,
+      "sma50": 263.45,
+      "sma200": 262.67,
+      "rsi14": 68.7,
+      "beta": 4.42,
+      "bucket": "volatile"
+    },
+    {
+      "symbol": "MARA",
+      "price": 12.90999984741211,
+      "ann_vol": 0.8711,
+      "atr_pct": 6.45,
+      "sma50": 11.27,
+      "sma200": 11.82,
+      "rsi14": 60.6,
+      "beta": 2.82,
+      "bucket": "volatile"
+    },
+    {
+      "symbol": "NET",
+      "price": 363.05999755859375,
+      "ann_vol": 0.7168,
+      "atr_pct": 5.1,
+      "sma50": 296.68,
+      "sma200": 252.11,
+      "rsi14": 80.3,
+      "beta": -0.07,
+      "bucket": "volatile"
+    },
+    {
+      "symbol": "SMCI",
+      "price": 41.36000061035156,
+      "ann_vol": 0.6609,
+      "atr_pct": 5.63,
+      "sma50": 34.66,
+      "sma200": 32.17,
+      "rsi14": 58.3,
+      "beta": 3.94,
+      "bucket": "volatile"
+    },
+    {
+      "symbol": "SHOP",
+      "price": 141.7899932861328,
+      "ann_vol": 0.6053,
+      "atr_pct": 5.25,
+      "sma50": 137.54,
+      "sma200": 123.96,
+      "rsi14": 46.4,
+      "beta": 1.24,
+      "bucket": "volatile"
+    },
+    {
+      "symbol": "AMD",
+      "price": 619.5700073242188,
+      "ann_vol": 0.5494,
+      "atr_pct": 4.31,
+      "sma50": 501.93,
+      "sma200": 446.15,
+      "rsi14": 81.2,
+      "beta": 3.49,
+      "bucket": "volatile"
+    }
+  ],
+  "steady": [
+    {
+      "symbol": "BRK-B",
+      "price": 506.95001220703125,
+      "ann_vol": 0.1145,
+      "atr_pct": 1.27,
+      "sma50": 505.78,
+      "sma200": 491.64,
+      "rsi14": 52.0,
+      "beta": 0.0,
+      "bucket": "steady"
+    },
+    {
+      "symbol": "PG",
+      "price": 146.9550018310547,
+      "ann_vol": 0.1323,
+      "atr_pct": 1.46,
+      "sma50": 145.94,
+      "sma200": 144.99,
+      "rsi14": 47.4,
+      "beta": -0.15,
+      "bucket": "steady"
+    },
+    {
+      "symbol": "KO",
+      "price": 88.6050033569336,
+      "ann_vol": 0.1339,
+      "atr_pct": 1.35,
+      "sma50": 86.87,
+      "sma200": 81.71,
+      "rsi14": 55.5,
+      "beta": -0.03,
+      "bucket": "steady"
+    },
+    {
+      "symbol": "ROKU",
+      "price": 153.47000122070312,
+      "ann_vol": 0.1469,
+      "atr_pct": 1.3,
+      "sma50": 151.92,
+      "sma200": 133.7,
+      "rsi14": 36.7,
+      "beta": 0.57,
+      "bucket": "steady"
+    },
+    {
+      "symbol": "JNJ",
+      "price": 271.3800964355469,
+      "ann_vol": 0.166,
+      "atr_pct": 1.91,
+      "sma50": 263.37,
+      "sma200": 246.05,
+      "rsi14": 42.0,
+      "beta": -0.09,
+      "bucket": "steady"
+    },
+    {
+      "symbol": "AAPL",
+      "price": 337.19000244140625,
+      "ann_vol": 0.2127,
+      "atr_pct": 2.1,
+      "sma50": 321.61,
+      "sma200": 300.19,
+      "rsi14": 59.9,
+      "beta": 0.47,
+      "bucket": "steady"
+    },
+    {
+      "symbol": "MSFT",
+      "price": 496.1600036621094,
+      "ann_vol": 0.22,
+      "atr_pct": 2.05,
+      "sma50": 473.05,
+      "sma200": 427.45,
+      "rsi14": 41.0,
+      "beta": 0.97,
+      "bucket": "steady"
+    },
+    {
+      "symbol": "CVX",
+      "price": 206.86500549316406,
+      "ann_vol": 0.2327,
+      "atr_pct": 2.26,
+      "sma50": 199.45,
+      "sma200": 190.05,
+      "rsi14": 43.1,
+      "beta": 0.02,
+      "bucket": "steady"
+    }
+  ]
 }
