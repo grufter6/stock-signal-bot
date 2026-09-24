@@ -1,0 +1,4 @@
+yfinance>=0.2.43
+numpy>=1.26
+requests>=2.32
+pytz>=2024.1

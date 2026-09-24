@@ -1,0 +1,30 @@
+name: Daily classification scan
+
+on:
+  schedule:
+    # 8:47am ET pre-market (13:47 UTC during EDT / 12:47 UTC during EST) —
+    # run at both offsets; the script itself doesn't care, it just refreshes
+    # the classification file once trading data is available.
+    - cron: "47 12 * * 1-5"
+    - cron: "47 13 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python daily_scan.py
+      - run: |
+          git config user.name "stock-signal-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add state/classification.json
+          git diff --cached --quiet || git commit -m "daily classification update"
+          git push
