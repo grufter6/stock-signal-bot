@@ -14,4 +14,4 @@ UNIVERSE = [
 ]
 
 # how many symbols to keep, per bucket, for the frequent signal-check
-TOP_N_PER_BUCKET = 8
+TOP_N_PER_BUCKET = 5

@@ -21,9 +21,8 @@ COLOR_SMA200 = "#199e70"   # slot 3, aqua (dark)
 GRIDLINE = "rgba(255,255,255,0.08)"
 AXIS_MUTED = "#898781"
 INK_SECONDARY = "#c3c2b7"  # dark secondary ink
-STATUS_GOOD = "#0ca30c"
-STATUS_DOWN = "#e34948"    # categorical slot 8, used here for negative delta
-STATUS_WARNING = "#fab219"
+COLOR_UP = "#0ca30c"       # status good
+COLOR_DOWN = "#e34948"     # categorical slot 8, used here for negative delta
 
 STATE = pathlib.Path(__file__).parent / "state"
 try:
@@ -70,22 +69,62 @@ h2, h3 {
   box-shadow: 0 0 30px rgba(0,229,255,0.04);
 }
 
+/* ---- ticker carousels ---- */
+.ticker-title {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Chakra Petch', sans-serif; color: #e8f4ff;
+  border-bottom: none; margin-bottom: 2px; font-size: 1.3rem;
+}
+.ticker-help { color: #898781; font-size: 0.82rem; margin: 0 0 10px 0; }
+.pulse-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #00e5ff; box-shadow: 0 0 8px #00e5ff;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.5); }
+}
+
+.ticker-row {
+  overflow: hidden; position: relative; margin-bottom: 24px;
+  mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+}
+.ticker-track {
+  display: flex; gap: 14px; width: max-content;
+  animation-timing-function: linear; animation-iteration-count: infinite;
+}
+.ticker-row:hover .ticker-track { animation-play-state: paused; }
+@keyframes scroll-left { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes scroll-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+.ticker-card {
+  flex: 0 0 auto; width: 132px;
+  background: rgba(13,20,32,0.7);
+  border: 1px solid rgba(0,229,255,0.15);
+  border-radius: 12px; padding: 10px 12px;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.ticker-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(0,229,255,0.55);
+  box-shadow: 0 4px 18px rgba(0,229,255,0.14);
+}
+.ticker-sym { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 1rem; color: #e8f4ff; }
+.ticker-spark { margin: 4px 0; line-height: 0; }
+.ticker-price { font-size: 0.86rem; color: #c3c2b7; }
+.ticker-pct { font-weight: 700; font-size: 0.86rem; margin-top: 2px; }
+.ticker-pct.up { color: #0ca30c; }
+.ticker-pct.down { color: #e34948; }
+
 .news-card {
-  display: flex;
-  gap: 14px;
-  padding: 14px;
-  margin-bottom: 10px;
+  display: flex; gap: 14px; padding: 14px; margin-bottom: 10px;
   background: rgba(13,20,32,0.6);
   border: 1px solid rgba(0,229,255,0.12);
   border-radius: 12px;
 }
-.news-thumb {
-  width: 96px;
-  height: 72px;
-  object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0;
-}
+.news-thumb { width: 96px; height: 72px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
 .news-body { display: flex; flex-direction: column; gap: 4px; justify-content: center; }
 .news-headline { color: #e8f4ff; font-weight: 600; text-decoration: none; font-size: 0.98rem; }
 .news-headline:hover { color: #00e5ff; }
@@ -109,9 +148,9 @@ signal_log = load("signal_log.json", [])
 
 st.markdown('<h1 class="hero-title">Stock Signal Bot</h1>', unsafe_allow_html=True)
 st.caption(
-    "Informational screener, not financial advice. Volatile/steady buckets and "
-    "moving averages come from historical data (yfinance); live price, RSI, "
-    "search and news come from Finnhub. Runs automatically on GitHub Actions."
+    "Informational screener, not financial advice. Volatile/steady buckets come from "
+    "historical data (yfinance); live price, search and news come from Finnhub. "
+    "Runs automatically on GitHub Actions."
 )
 
 if classification["date"]:
@@ -120,60 +159,88 @@ else:
     st.warning("No classification yet — the daily scan hasn't run.")
 
 
-def style_table(df: pd.DataFrame) -> "pd.io.formats.style.Styler":
-    def rsi_style(val):
-        if pd.isna(val):
-            return ""
-        if val <= 30:
-            return f"background-color: {STATUS_GOOD}26; color: {STATUS_GOOD}; font-weight: 600;"
-        if val >= 70:
-            return f"background-color: {STATUS_WARNING}26; color: {STATUS_WARNING}; font-weight: 600;"
-        return ""
-
-    def pct_style(val):
-        if pd.isna(val):
-            return ""
-        color = STATUS_GOOD if val >= 0 else STATUS_DOWN
-        return f"color: {color}; font-weight: 600;"
-
-    styler = df.style
-    if "rsi14" in df.columns:
-        styler = styler.map(rsi_style, subset=["rsi14"])
-    if "today %" in df.columns:
-        styler = styler.map(pct_style, subset=["today %"])
-    return styler
-
-
-def render_bucket(title, rows, help_text):
-    st.subheader(title)
-    st.caption(help_text)
-    if not rows:
-        st.write("Nothing in this bucket today.")
-        return
-    df = pd.DataFrame(rows)
-    if not df.empty:
-        df["live"] = df["symbol"].map(lambda s: live_quotes.get(s, {}).get("price"))
-        df["today %"] = df["symbol"].map(lambda s: live_quotes.get(s, {}).get("dp"))
-        cols = ["symbol", "live", "today %", "price", "ann_vol", "atr_pct",
-                "rsi14", "sma50", "sma200", "beta"]
-        cols = [c for c in cols if c in df.columns]
-        st.dataframe(style_table(df[cols]), use_container_width=True, hide_index=True)
-
-
-col1, col2 = st.columns(2)
-with col1:
-    with st.container(border=True):
-        render_bucket("Volatile", classification.get("volatile", []),
-                       "Highest measured volatility in the watchlist — alerts fire on outsized intraday moves.")
-with col2:
-    with st.container(border=True):
-        render_bucket("Steady", classification.get("steady", []),
-                       "Lowest measured volatility, in an established uptrend — alerts fire on RSI extremes.")
-
-
 @st.cache_data(ttl=900)
 def load_history(symbol: str) -> pd.DataFrame:
     return yf.Ticker(symbol).history(period="6mo", interval="1d")
+
+
+def sparkline_svg(symbol: str, width: int = 104, height: int = 34) -> str:
+    hist = load_history(symbol)
+    if hist.empty:
+        return ""
+    closes = hist["Close"].dropna().tail(30).to_numpy()
+    if len(closes) < 2:
+        return ""
+    lo, hi = float(closes.min()), float(closes.max())
+    span = (hi - lo) or 1.0
+    n = len(closes)
+    pts = [f"{(i / (n - 1)) * width:.1f},{height - ((c - lo) / span) * height:.1f}"
+           for i, c in enumerate(closes)]
+    color = COLOR_UP if closes[-1] >= closes[0] else COLOR_DOWN
+    return (f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
+            f'preserveAspectRatio="none"><polyline points="{" ".join(pts)}" fill="none" '
+            f'stroke="{color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>')
+
+
+def render_ticker_row(title: str, help_text: str, rows: list, direction: str = "left", speed: int = 26):
+    st.markdown(
+        f'<div class="ticker-title"><span class="pulse-dot"></span>{html.escape(title)}</div>'
+        f'<p class="ticker-help">{html.escape(help_text)}</p>',
+        unsafe_allow_html=True,
+    )
+    if not rows:
+        st.caption("No data yet.")
+        return
+    cards = []
+    for r in rows:
+        sym = r["symbol"]
+        price = r.get("price")
+        pct = r.get("pct")
+        price_txt = f"${price:,.2f}" if price is not None else "—"
+        pct_txt = f"{pct:+.2f}%" if pct is not None else "—"
+        pct_cls = "up" if (pct or 0) >= 0 else "down"
+        spark = sparkline_svg(sym)
+        cards.append(
+            f'<div class="ticker-card"><div class="ticker-sym">{html.escape(sym)}</div>'
+            f'<div class="ticker-spark">{spark}</div>'
+            f'<div class="ticker-price">{price_txt}</div>'
+            f'<div class="ticker-pct {pct_cls}">{pct_txt}</div></div>'
+        )
+    cards_html = "".join(cards)
+    anim = "scroll-left" if direction == "left" else "scroll-right"
+    st.markdown(
+        f'<div class="ticker-row"><div class="ticker-track" '
+        f'style="animation-duration:{speed}s;animation-name:{anim};">'
+        f'{cards_html}{cards_html}</div></div>',
+        unsafe_allow_html=True,
+    )
+
+
+volatile_top = classification.get("volatile", [])[:5]
+steady_top = classification.get("steady", [])[:5]
+
+volatile_rows = [{"symbol": r["symbol"],
+                   "price": live_quotes.get(r["symbol"], {}).get("price", r.get("price")),
+                   "pct": live_quotes.get(r["symbol"], {}).get("dp")} for r in volatile_top]
+steady_rows = [{"symbol": r["symbol"],
+                "price": live_quotes.get(r["symbol"], {}).get("price", r.get("price")),
+                "pct": live_quotes.get(r["symbol"], {}).get("dp")} for r in steady_top]
+
+with_live = [r for r in (volatile_rows + steady_rows) if r["pct"] is not None]
+gainers = sorted(with_live, key=lambda r: r["pct"], reverse=True)[:5]
+losers = sorted(with_live, key=lambda r: r["pct"])[:5]
+
+with st.container(border=True):
+    render_ticker_row("Top Gainers", "Best today's % move in the watchlist.", gainers, direction="left")
+    render_ticker_row("Top Losers", "Worst today's % move in the watchlist.", losers, direction="right")
+    if not with_live:
+        st.caption("Gainers/losers populate once the signal-check job runs during market hours.")
+
+with st.container(border=True):
+    render_ticker_row("Volatile", "Highest measured volatility in the watchlist.",
+                       volatile_rows, direction="left", speed=30)
+    render_ticker_row("Steady", "Lowest measured volatility, established uptrend.",
+                       steady_rows, direction="right", speed=30)
 
 
 @st.cache_data(ttl=3600)
@@ -206,8 +273,7 @@ def get_news(symbol: str):
         return []
 
 
-watchlist_rows = classification.get("volatile", []) + classification.get("steady", [])
-watchlist_symbols = [r["symbol"] for r in watchlist_rows]
+watchlist_symbols = [r["symbol"] for r in volatile_top + steady_top]
 
 if "active_symbol" not in st.session_state:
     st.session_state.active_symbol = watchlist_symbols[0] if watchlist_symbols else "AAPL"
