@@ -16,7 +16,7 @@
       "symbol": "MARA",
       "price": 6.639999866485596,
       "ann_vol": 1.0092,
-      "atr_pct": 9.91,
+      "atr_pct": 9.92,
       "sma50": 9.43,
       "sma200": 11.16,
       "rsi14": 46.2,
@@ -59,6 +59,17 @@
   ],
   "steady": [
     {
+      "symbol": "ROKU",
+      "price": 160.52000427246094,
+      "ann_vol": 0.1685,
+      "atr_pct": 1.76,
+      "sma50": 155.33,
+      "sma200": 146.55,
+      "rsi14": 61.5,
+      "beta": -0.38,
+      "bucket": "steady"
+    },
+    {
       "symbol": "BRK-B",
       "price": 592.8499755859375,
       "ann_vol": 0.1904,
@@ -100,17 +111,6 @@
       "sma200": 121.51,
       "rsi14": 68.8,
       "beta": -0.35,
-      "bucket": "steady"
-    },
-    {
-      "symbol": "UNH",
-      "price": 412.0199890136719,
-      "ann_vol": 0.2359,
-      "atr_pct": 2.67,
-      "sma50": 391.53,
-      "sma200": 398.56,
-      "rsi14": 51.3,
-      "beta": 0.14,
       "bucket": "steady"
     }
   ]
