@@ -59,6 +59,17 @@
   ],
   "steady": [
     {
+      "symbol": "ROKU",
+      "price": 160.52000427246094,
+      "ann_vol": 0.1685,
+      "atr_pct": 1.76,
+      "sma50": 155.33,
+      "sma200": 146.55,
+      "rsi14": 61.5,
+      "beta": -0.06,
+      "bucket": "steady"
+    },
+    {
       "symbol": "BRK-B",
       "price": 586.760009765625,
       "ann_vol": 0.195,
