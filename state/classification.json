@@ -92,6 +92,17 @@
       "bucket": "steady"
     },
     {
+      "symbol": "ROKU",
+      "price": 160.52000427246094,
+      "ann_vol": 0.1685,
+      "atr_pct": 1.76,
+      "sma50": 155.33,
+      "sma200": 147.53,
+      "rsi14": 61.5,
+      "beta": 0.01,
+      "bucket": "steady"
+    },
+    {
       "symbol": "KO",
       "price": 97.58999633789062,
       "ann_vol": 0.1687,
@@ -100,17 +111,6 @@
       "sma200": 87.25,
       "rsi14": 58.2,
       "beta": -0.31,
-      "bucket": "steady"
-    },
-    {
-      "symbol": "PG",
-      "price": 173.22999572753906,
-      "ann_vol": 0.1869,
-      "atr_pct": 1.82,
-      "sma50": 157.84,
-      "sma200": 150.04,
-      "rsi14": 64.0,
-      "beta": -0.14,
       "bucket": "steady"
     }
   ]
